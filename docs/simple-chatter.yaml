@@ -1,0 +1,171 @@
+swagger: '2.0'
+info:
+  description: This is a simple API
+  version: 1.0.0
+  title: Simple Chatter API
+  # put the contact info for your development or API team
+  contact:
+    email: benitezjp@gmail.com
+
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+
+# tags are used for organizing operations
+tags:
+- name: users
+  description: Operations related to users
+
+paths:
+  /users:
+    get:
+      tags:
+      - users
+      summary: searches all the available users in the system
+      operationId: searchUsers
+      description: |
+        By passing in the appropriate options, you can search for
+        available users in the system
+      produces:
+      - application/json
+      parameters:
+      - in: query
+        name: searchString
+        description: pass an optional search string for looking up users
+        required: false
+        type: string
+      - in: query
+        name: skip
+        description: number of records to skip for pagination
+        type: integer
+        format: int32
+        minimum: 0
+      - in: query
+        name: limit
+        description: maximum number of records to return
+        type: integer
+        format: int32
+        minimum: 0
+        maximum: 50
+      responses:
+        200:
+          description: search results matching criteria
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/User'
+        400:
+          description: bad input parameter
+    post:
+      tags:
+      - users
+      summary: creates a new user
+      operationId: addUser
+      description: Adds an user to the system
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      parameters:
+      - in: body
+        name: user
+        description: User to add
+        schema:
+          $ref: '#/definitions/User'
+      responses:
+        201:
+          description: user created
+          schema:
+            $ref: '#/definitions/User'
+        400:
+          description: invalid input, object invalid
+        409:
+          description: an existing user already exists
+  /users/{username}:
+    delete:
+      tags:
+      - users
+      summary: delete an user
+      operationId: deleteUser
+      description: Removes an existing user from the system
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      parameters:
+      - in: path
+        name: username
+        description: username of the user to remove
+        type: string
+        required: true
+      responses:
+        200: 
+          description: user deleted
+        403:
+          description: access denied
+        404:
+          description: user not found
+        409:
+          description: user already deleted
+    put:
+      tags:
+      - users
+      summary: update an user
+      operationId: updateUser
+      description: Updates an existing user in the system
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      parameters:
+      - in: path
+        name: username
+        description: username of the user to update
+        type: string
+        required: true
+      - in: body
+        name: user
+        description: updated user 
+        schema:
+          $ref: '#/definitions/User'
+      responses:
+        200:
+          description: user updated
+          schema:
+            $ref: '#/definitions/User'
+        400:
+          description: invalid input, object invalid
+        403:
+          description: access denied
+        404:
+          description: user not found
+
+definitions:
+  User:
+    type: object
+    required: 
+    - username
+    - password
+    - type
+    properties:
+      username:
+        type: string
+        example: admin
+      password:
+        type: string
+        example: password
+      type:
+        type: string
+        example: ADMIN
+      bio:
+        type: string
+        example: A short bio for the user
+      birthDate:
+        type: string
+        example: 2016-08-29
+
+# Added by API Auto Mocking Plugin
+host: virtserver.swaggerhub.com
+basePath: /juan-pablo-benitez/Pinger/1.0.0
+schemes:
+ - https
